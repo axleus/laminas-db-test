@@ -39,12 +39,16 @@ class HomePageHandler implements RequestHandlerInterface
         return match (
             Test::tryFrom($request->getQueryParams()['test'])
             ) {
-            Test::Metadata => $this->metaData($request),
+            Test::Metadata     => $this->metaData($request),
             Test::TableGateway => $this->tableGateway($request),
             default => new HtmlResponse(
                 Debug::dump(
-                    ['error' => 'unknown test']),
+                    ['error' => 'unknown test'],
+                    __METHOD__,
+                    false,
+                    false
                 ),
+            ),
         };
     }
 
