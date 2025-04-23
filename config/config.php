@@ -14,8 +14,8 @@ $cacheConfig = [
 
 $aggregator = new ConfigAggregator([
     \Axleus\Debug\ConfigProvider::class,
-    \Laminas\Db\Mysql\ConfigProvider::class,
-    \Laminas\Db\ConfigProvider::class,
+    \Laminas\Db\Adapter\Mysql\ConfigProvider::class,
+    //\Laminas\Db\ConfigProvider::class,
     \Mezzio\Tooling\ConfigProvider::class,
     \Mezzio\Router\FastRouteRouter\ConfigProvider::class,
     \Laminas\HttpHandlerRunner\ConfigProvider::class,

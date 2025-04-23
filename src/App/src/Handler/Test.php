@@ -8,4 +8,6 @@ enum Test: string
 {
     case Metadata     = 'metadata';
     case TableGateway = 'tablegateway';
+    case NamedParams  = 'namedParams';
+    case NormalizeArg = 'normalizeArg';
 }

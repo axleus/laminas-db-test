@@ -28,9 +28,6 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "composer/package-versions-deprecated": true,
             "laminas/laminas-component-installer": true
-        },
-        "platform": {
-            "php": "8.1.99"
         }
     },
     "minimum-stability": "dev",
@@ -58,8 +55,7 @@
     },
     "require": {
         "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
-        "laminas/laminas-db": "*",
-        "laminas/laminas-db-mysql-adapter": "*",
+        "laminas/laminas-db-adapter-mysql": "*",
         "composer/package-versions-deprecated": "^1.10.99",
         "laminas/laminas-component-installer": "^2.6 || ^3.0",
         "laminas/laminas-config-aggregator": "^1.6",

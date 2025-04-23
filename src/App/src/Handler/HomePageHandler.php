@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Handler;
 
 use Axleus\Debug\Debug;
-use Laminas\Db\Mysql\Adapter;
+use Laminas\Db\Adapter\Mysql\Adapter;
 use Laminas\Db\Metadata\Source\Factory;
 use Laminas\Db\Sql\Ddl;
 use Laminas\Db\Sql\Sql;
@@ -14,6 +14,7 @@ use Mezzio\Router\RouteResult;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use stdClass;
 
 class HomePageHandler implements RequestHandlerInterface
 {
@@ -41,6 +42,8 @@ class HomePageHandler implements RequestHandlerInterface
             ) {
             Test::Metadata     => $this->metaData($request),
             Test::TableGateway => $this->tableGateway($request),
+            Test::NamedParams  => $this->namedParams($request),
+            Test::NormalizeArg => $this->normalizeArg($request),
             default => new HtmlResponse(
                 Debug::dump(
                     ['error' => 'unknown test'],
@@ -50,6 +53,54 @@ class HomePageHandler implements RequestHandlerInterface
                 ),
             ),
         };
+    }
+
+    private function normalizeArg(ServerRequestInterface $request): ResponseInterface
+    {
+        return new HtmlResponse(
+            Debug::dump(
+                var: NormalizedArgument::buildArgument(200, NormalizedArgument::Literal),
+                outputBuffered: false
+            ),
+        );
+        //return new HtmlResponse(implode('/', NormalizedArgument::buildArgument(['id' => '1'], 'literal')) );
+    }
+
+    private function namedParams(ServerRequestInterface $request): ResponseInterface
+    {
+        $sql = new Sql($this->adapter);
+
+        $insert = $sql->update('test');
+        $insert->set([
+            'name'  => ':name',
+            'value' => ':value',
+        ])->where(['id' => ':id']);
+        $stmt = $sql->prepareStatementForSqlObject($insert);
+
+        //positional parameters
+        // $stmt->execute([
+        //     'foo',
+        //     'bar',
+        //     1,
+        // ]);
+
+        //"mapped" named parameters
+        $stmt->execute([
+            'c_0'    => 'foo',
+            'c_1'    => 'bar',
+            'where1' => 1,
+        ]);
+
+        //real named parameters
+        // $stmt->execute([
+        //     'id'    => 1,
+        //     'name'  => 'foo',
+        //     'value' => 'bar',
+        // ]);
+
+        return new HtmlResponse(
+            Debug::dbDebug($this->adapter, false),
+        );
     }
 
     private function metaData(ServerRequestInterface $request): ResponseInterface
@@ -82,7 +133,13 @@ class HomePageHandler implements RequestHandlerInterface
     {
 
         $metadata      = Factory::createSourceFromAdapter($this->adapter);
-        $tableInstance = $metadata->getTable(static::TABLE);
+        $tables        = $metadata->getTableNames();
+        $tableInstance = null;
+
+        if (\in_array(static::TABLE, $tables, true)) {
+            $tableInstance = $metadata->getTable(static::TABLE);
+        }
+
 
         if ($tableInstance instanceof \Laminas\Db\Metadata\Object\TableObject) {
             $this->adapter->query(
