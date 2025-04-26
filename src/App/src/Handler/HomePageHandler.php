@@ -77,12 +77,12 @@ class HomePageHandler implements RequestHandlerInterface
         ])->where(['id' => ':id']);
         $stmt = $sql->prepareStatementForSqlObject($insert);
 
-        //positional parameters
-        // $stmt->execute([
-        //     'foo',
-        //     'bar',
-        //     1,
-        // ]);
+        // positional parameters
+        $stmt->execute([
+            'foo',
+            'bar',
+            1,
+        ]);
 
         //"mapped" named parameters
         $stmt->execute([
@@ -92,11 +92,11 @@ class HomePageHandler implements RequestHandlerInterface
         ]);
 
         //real named parameters
-        // $stmt->execute([
-        //     'id'    => 1,
-        //     'name'  => 'foo',
-        //     'value' => 'bar',
-        // ]);
+        $stmt->execute([
+            'id'    => 1,
+            'name'  => 'foo',
+            'value' => 'bar',
+        ]);
 
         return new HtmlResponse(
             Debug::dbDebug($this->adapter, false),
