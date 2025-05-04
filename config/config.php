@@ -13,7 +13,6 @@ $cacheConfig = [
 ];
 
 $aggregator = new ConfigAggregator([
-    \Axleus\Debug\ConfigProvider::class,
     \Laminas\Db\Adapter\Mysql\ConfigProvider::class,
     //\Laminas\Db\ConfigProvider::class,
     \Mezzio\Tooling\ConfigProvider::class,
@@ -31,6 +30,7 @@ $aggregator = new ConfigAggregator([
         : function (): array {
             return [];
         },
+    \Axleus\DevTools\ConfigProvider::class,
     // Default App module config
     App\ConfigProvider::class,
     // Load application config in a pre-defined order in such a way that local settings

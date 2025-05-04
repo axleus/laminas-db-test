@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b7082c6b2d1982294316a0faf1d62100",
+    "content-hash": "93a8d9dc63ebc2d831f63ed4458c697d",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -321,11 +321,11 @@
         },
         {
             "name": "laminas/laminas-db",
-            "version": "3.0.x-dev",
+            "version": "2.23.x-dev",
             "dist": {
                 "type": "path",
                 "url": "../../Github/laminas-db-fork-repos/laminas-db",
-                "reference": "e582c8aeadbbb4dcc97f821da609019d5ad8721b"
+                "reference": "446f46e3e264f3753939a29630b53d3e33d3730a"
             },
             "require": {
                 "laminas/laminas-stdlib": "^3.20.0",
@@ -422,10 +422,10 @@
             "dist": {
                 "type": "path",
                 "url": "../../Github/laminas-db-fork-repos/laminas-db-adapter-mysql",
-                "reference": "bc056e09a1c4bdbaf9eadf8331db7ca7503ae4b3"
+                "reference": "d3ac706b20c1b2a6c6648c5d3e6fb3868f389caf"
             },
             "require": {
-                "laminas/laminas-db": "3.0.x",
+                "laminas/laminas-db": "*",
                 "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
             },
             "require-dev": {
@@ -2014,31 +2014,26 @@
             "time": "2024-04-13T18:00:56+00:00"
         },
         {
-            "name": "axleus/axleus-debug",
-            "version": "dev-master",
+            "name": "axleus/axleus-dev-tools",
+            "version": "0.0.x-dev",
             "dist": {
                 "type": "path",
-                "url": "../../Github/axleus-org/axleus-debug",
-                "reference": "bc5223bf4c7f063aaaf23a984a459b1489483920"
+                "url": "../../Github/axleus-org/axleus-dev-tools",
+                "reference": "03848ccbe46ec37933690334ef611c6c0d0675bc"
             },
             "require": {
-                "laminas/laminas-db": "*",
-                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
+                "tracy/tracy": "^2.10"
             },
             "type": "library",
-            "extra": {
-                "laminas": {
-                    "config-provider": "Axleus\\Debug\\ConfigProvider"
-                }
-            },
             "autoload": {
                 "psr-4": {
-                    "Axleus\\Debug\\": "src/"
+                    "Axleus\\DevTools\\": "src/"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "AxleusTest\\Debug\\": "test/"
+                    "AxleusTest\\DevToolsTest\\": "test/"
                 }
             },
             "scripts": {
@@ -2055,6 +2050,15 @@
                 ],
                 "static-analysis": [
                     "psalm --shepherd --stats"
+                ],
+                "test": [
+                    "phpunit --colors=always --testsuite \"unit test\""
+                ],
+                "test-coverage": [
+                    "phpunit --colors=always --coverage-clover clover.xml"
+                ],
+                "test-integration": [
+                    "phpunit --colors=always --testsuite \"integration test\""
                 ]
             },
             "license": [
@@ -2063,18 +2067,15 @@
             "authors": [
                 {
                     "name": "Joey Smith",
-                    "email": "jsmith@webinertia.net"
+                    "email": "jsmith@axleus.org",
+                    "homepage": "https://github.com/axleus"
                 }
             ],
-            "description": "axleus debugging tools",
-            "homepage": "https://github.com/orgs/axleus/discussions",
+            "description": "Developer tooling for the Axleus platform",
             "keywords": [
-                "axleus"
+                "axleus",
+                "axleus dev tools"
             ],
-            "support": {
-                "issues": "https://github.com/axleus/axleus-debug/issues",
-                "chat": "https://discord.gg/9TxQ74EPsG"
-            },
             "transport-options": {
                 "relative": true
             }
@@ -7040,6 +7041,81 @@
             "time": "2024-03-03T12:36:25+00:00"
         },
         {
+            "name": "tracy/tracy",
+            "version": "v2.10.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nette/tracy.git",
+                "reference": "32303e02c222eea8571402a8310fc3fe70422c37"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nette/tracy/zipball/32303e02c222eea8571402a8310fc3fe70422c37",
+                "reference": "32303e02c222eea8571402a8310fc3fe70422c37",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-session": "*",
+                "php": "8.0 - 8.4"
+            },
+            "conflict": {
+                "nette/di": "<3.0"
+            },
+            "require-dev": {
+                "latte/latte": "^2.5 || ^3.0",
+                "nette/di": "^3.0",
+                "nette/http": "^3.0",
+                "nette/mail": "^3.0 || ^4.0",
+                "nette/tester": "^2.2",
+                "nette/utils": "^3.0 || ^4.0",
+                "phpstan/phpstan": "^1.0",
+                "psr/log": "^1.0 || ^2.0 || ^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.10-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/Tracy/functions.php"
+                ],
+                "classmap": [
+                    "src"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "https://davidgrudl.com"
+                },
+                {
+                    "name": "Nette Community",
+                    "homepage": "https://nette.org/contributors"
+                }
+            ],
+            "description": "😎  Tracy: the addictive tool to ease debugging PHP code for cool developers. Friendly design, logging, profiler, advanced features like debugging AJAX calls or CLI support. You will love it.",
+            "homepage": "https://tracy.nette.org",
+            "keywords": [
+                "Xdebug",
+                "debug",
+                "debugger",
+                "nette",
+                "profiler"
+            ],
+            "support": {
+                "issues": "https://github.com/nette/tracy/issues",
+                "source": "https://github.com/nette/tracy/tree/v2.10.10"
+            },
+            "time": "2025-04-28T14:35:15+00:00"
+        },
+        {
             "name": "vimeo/psalm",
             "version": "5.26.1",
             "source": {
@@ -7208,7 +7284,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "axleus/axleus-debug": 20,
+        "axleus/axleus-dev-tools": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,

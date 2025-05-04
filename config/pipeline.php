@@ -22,7 +22,8 @@ use Psr\Container\ContainerInterface;
 return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
     // The error handler should be the first (most outer) middleware to catch
     // all Exceptions.
-    $app->pipe(ErrorHandler::class);
+    //$app->pipe(ErrorHandler::class);
+    $app->pipe(\Axleus\DevTools\Middleware\TracyDebuggerMiddleware::class);
     $app->pipe(ServerUrlMiddleware::class);
 
     // Pipe more middleware here that you want to execute on every request:
@@ -67,8 +68,11 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     // - route-based validation
     // - etc.
 
+    //$app->pipe(\Axleus\DevTools\Middleware\RequestPanelMiddleware::class);
+
     // Register the dispatch middleware in the middleware pipeline
     $app->pipe(DispatchMiddleware::class);
+
 
     // At this point, if no Response is returned by any middleware, the
     // NotFoundHandler kicks in; alternately, you can provide other fallback

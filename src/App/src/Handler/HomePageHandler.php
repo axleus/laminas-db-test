@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace App\Handler;
 
-use Axleus\Debug\Debug;
+use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\Adapter\Mysql\Adapter;
 use Laminas\Db\Metadata\Source\Factory;
 use Laminas\Db\Sql\Ddl;
 use Laminas\Db\Sql\Sql;
+use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Mezzio\Router\RouteResult;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use stdClass;
+use Tracy\Debugger;
 
 class HomePageHandler implements RequestHandlerInterface
 {
@@ -44,12 +46,13 @@ class HomePageHandler implements RequestHandlerInterface
             Test::TableGateway => $this->tableGateway($request),
             Test::NamedParams  => $this->namedParams($request),
             Test::NormalizeArg => $this->normalizeArg($request),
-            default => new HtmlResponse(
-                Debug::dump(
+            default => new TextResponse(
+                Debugger::dump([
                     ['error' => 'unknown test'],
                     __METHOD__,
                     false,
                     false
+                ]
                 ),
             ),
         };
@@ -57,12 +60,7 @@ class HomePageHandler implements RequestHandlerInterface
 
     private function normalizeArg(ServerRequestInterface $request): ResponseInterface
     {
-        return new HtmlResponse(
-            Debug::dump(
-                var: NormalizedArgument::buildArgument(200, NormalizedArgument::Literal),
-                outputBuffered: false
-            ),
-        );
+        return new TextResponse('running normalize arg test');
         //return new HtmlResponse(implode('/', NormalizedArgument::buildArgument(['id' => '1'], 'literal')) );
     }
 
@@ -75,6 +73,7 @@ class HomePageHandler implements RequestHandlerInterface
             'name'  => ':name',
             'value' => ':value',
         ])->where(['id' => ':id']);
+        /** @var StatementInterface $stmt */
         $stmt = $sql->prepareStatementForSqlObject($insert);
 
         // positional parameters
@@ -98,17 +97,13 @@ class HomePageHandler implements RequestHandlerInterface
             'value' => 'bar',
         ]);
 
-        return new HtmlResponse(
-            Debug::dbDebug($this->adapter, false),
-        );
+        return new HtmlResponse('<span>running: ' . __METHOD__ . '</span>');
     }
 
     private function metaData(ServerRequestInterface $request): ResponseInterface
     {
         $this->createTable();
-        return new HtmlResponse(
-            Debug::dbDebug($this->adapter, false),
-        );
+        return new TextResponse('running: ' . __METHOD__);
     }
 
     private function tableGateway(ServerRequestInterface $request): ResponseInterface
@@ -124,9 +119,8 @@ class HomePageHandler implements RequestHandlerInterface
         ];
         $gateway->insert($insertData);
 
-        return new HtmlResponse(
-            Debug::dbDebug($this->adapter, false),
-        );
+        Debugger::dump($this->adapter);
+        return new TextResponse('running: ' . __METHOD__);
     }
 
     private function createTable(): void
